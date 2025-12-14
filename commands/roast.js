@@ -8,7 +8,17 @@ module.exports = async (interaction) => {
 
   const prompt = `Give a funny, friendly roast for ${target}. Keep it short.`;
 
-  const roast = await askGemini(prompt);
+  try {
+    const roast = await askGemini(prompt, interaction.user.id);
 
-  await interaction.editReply(roast);
+    await interaction.editReply(roast);
+  } catch (error) {
+    if (error.message === "RATE_LIMIT") {
+      await interaction.editReply(
+        "⏳ Too fast! Wait 10 seconds before another roast."
+      );
+    } else {
+      throw error;
+    }
+  }
 };
