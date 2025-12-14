@@ -1,5 +1,7 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits, Events } = require("discord.js");
+const logger = require("./utils/logger");
+const errorHandler = require("./utils/errorHandler");
 
 const tamil = require("./commands/tamil");
 const roast = require("./commands/roast");
@@ -9,7 +11,7 @@ const client = new Client({
 });
 
 client.once(Events.ClientReady, () => {
-  console.log(`✅ Bot Online as ${client.user.tag}`);
+  logger.info(`✅ Bot Online as ${client.user.tag}`);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -40,19 +42,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
   } catch (error) {
-    console.error("Interaction Error:", error);
-
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: "⚠️ Something went wrong. Please try again.",
-        ephemeral: true,
-      });
-    } else {
-      await interaction.reply({
-        content: "⚠️ Something went wrong. Please try again.",
-        ephemeral: true,
-      });
-    }
+    await errorHandler(error, interaction);
   }
 });
 

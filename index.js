@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+const logger = require("./utils/logger");
 const app = express();
 
 app.get("/", (req, res) => {
@@ -9,6 +10,6 @@ app.get("/", (req, res) => {
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+  logger.info(`Server started on port ${port}`);
 });
 require("./bot");
